@@ -1,5 +1,16 @@
 @echo off
 
+REM Check for administrator privileges
+net session >nul 2>&1
+if %errorlevel% == 0 (
+  echo Running as administrator...
+) else (
+  echo Error: This script requires administrator privileges.
+  echo Please right-click and select "Run as administrator".
+  pause
+  exit /b
+)
+
 REM Directory to download files
 set DOWNLOAD_DIR=%USERPROFILE%\Downloads\Files
 
