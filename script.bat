@@ -12,7 +12,7 @@ mkdir "%DOWNLOAD_DIR%\SarabunFont"
 powershell -Command "Expand-Archive -Path '%DOWNLOAD_DIR%\SarabunFont.zip' -DestinationPath '%DOWNLOAD_DIR%\SarabunFont'"
 
 REM --- Install all fonts in SarabunFont folder ---
-for %%f in ("%DOWNLOAD_DIR%\SarabunFont\*.ttf" "%DOWNLOAD_DIR%\SarabunFont\*.otf") do (
+for %%f in ("%DOWNLOAD_DIR%\SarabunFont\SarabunFont\*.ttf" "%DOWNLOAD_DIR%\SarabunFont\*.otf") do (
     echo Installing font: "%%f"
     copy "%%f" "%WINDIR%\Fonts" /Y >nul
 )
