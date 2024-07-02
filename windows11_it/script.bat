@@ -85,6 +85,10 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v We
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v WindowAnimation /t REG_DWORD /d 1 /f
 reg add "HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f
 
+:: create python alias
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python.exe"
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python3.exe"
+
 :: --- Telemetry and Privacy Tweaks (for Windows 10/11) ---
 
 :: Disable Telemetry Services (might require adjustments for different Windows versions)
@@ -124,19 +128,22 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
 mkdir "%USERPROFILE%\Pictures\Wallpaper"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/GoldenGate2.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Light.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Dark.jpg"
+
 curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "http://%HOST_IP%/wallpaper/GoldenGate2.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "http://%HOST_IP%/wallpaper/Sequoia-Light.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "http://%HOST_IP%/wallpaper/Sequoia-Dark.jpg"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
-copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python.exe"
-copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python3.exe"
 
+:: Change background wallpaper
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" /f
 
 :: Notify the system that the settings have changed
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
-
-:: Delete the .rar file
-del "%USERPROFILE%\.vscode\extensions.rar"
 
 :: Restart Windows Explorer
 taskkill /f /im explorer.exe
