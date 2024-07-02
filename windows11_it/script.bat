@@ -116,7 +116,7 @@ setlocal
 
 set USERPROFILE=%USERPROFILE%
 set BATCH_FILE=%~f0
-set HOST_IP="10.20.3.11"
+set HOST_IP="10.20.3.30"
 
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
