@@ -85,10 +85,34 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v We
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v WindowAnimation /t REG_DWORD /d 1 /f
 reg add "HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f
 
+:: --- Telemetry and Privacy Tweaks (for Windows 10/11) ---
+
+:: Disable Telemetry Services (might require adjustments for different Windows versions)
+sc config DiagTrack start= disabled
+sc config dmwappushservice start= disabled
+
+:: Disable Advertising ID
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
+
+:: Disable Location Tracking
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\GlobalPrivacyControl" /v LocationTrackingAllowed /t REG_DWORD /d 0 /f
+
+:: Disable App Telemetry
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ApplicationTelemetry" /v AllowTelemetry /t REG_DWORD /d 0 /f
+
+:: Disable Handwriting and Typing Data Collection
+reg add "HKCU\SOFTWARE\Microsoft\Input\TIP" /v Policies /t REG_DWORD /d 255 /f
+
+:: Disable Windows Defender Sample Submission (for Windows 10)
+reg add "HKLM\SOFTWARE\Microsoft\Windows Defender" /v SubmitSamplesConsent /t REG_DWORD /d 2 /f
+
+:: --- End of Telemetry and Privacy Tweaks ---
+
 setlocal
 
 set USERPROFILE=%USERPROFILE%
 set BATCH_FILE=%~f0
+set HOST_IP="10.20.3.11"
 
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
@@ -99,12 +123,21 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   -H "Content-Type: application/x-www-form-urlencoded" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
+mkdir "%USERPROFILE%\Pictures\Wallpaper"
+
+curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "http://%HOST_IP%/wallpaper/GoldenGate2.jpg"
+
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
-reg add "HKCU\Control Panel\Desktop" /v Wallpaper /f /t REG_SZ /d "C:\Users\LAB203_xx\Documents\Computer Prepro67.png"
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python.exe"
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python3.exe"
+
 
 :: Notify the system that the settings have changed
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
+
+:: Delete the .rar file
+del "%USERPROFILE%\.vscode\extensions.rar"
 
 :: Restart Windows Explorer
 taskkill /f /im explorer.exe

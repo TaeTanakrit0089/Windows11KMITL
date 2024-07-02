@@ -90,15 +90,54 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v We
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v WindowAnimation /t REG_DWORD /d 1 /f
 reg add "HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f
 
+:: Disable standard pointer acceleration
+reg add "HKCU\Control Panel\Mouse" /v MouseSpeed /t REG_DWORD /d 0 /f
+reg add "HKCU\Control Panel\Mouse" /v SmoothMouseXCurve /t REG_BINARY /d "00000000000000000000000000000000" /f
+reg add "HKCU\Control Panel\Mouse" /v SmoothMouseYCurve /t REG_BINARY /d "00000000000000000000000000000000" /f
+
+:: Disable Enhanced Pointer Precision
+reg add "HKCU\Control Panel\Mouse" /v EnhancePointerPrecision /t REG_DWORD /d 0 /f
+
+:: --- Telemetry and Privacy Tweaks (for Windows 10/11) --- 
+
+:: Disable Telemetry Services (might require adjustments for different Windows versions)
+sc config DiagTrack start= disabled
+sc config dmwappushservice start= disabled
+
+:: Disable Advertising ID 
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
+
+:: Disable Location Tracking 
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\GlobalPrivacyControl" /v LocationTrackingAllowed /t REG_DWORD /d 0 /f
+
+:: Disable App Telemetry
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ApplicationTelemetry" /v AllowTelemetry /t REG_DWORD /d 0 /f
+
+:: Disable Handwriting and Typing Data Collection
+reg add "HKCU\SOFTWARE\Microsoft\Input\TIP" /v Policies /t REG_DWORD /d 255 /f
+
+:: Disable Windows Defender Sample Submission (for Windows 10)
+reg add "HKLM\SOFTWARE\Microsoft\Windows Defender" /v SubmitSamplesConsent /t REG_DWORD /d 2 /f
+
+:: Set Microsoft Edge default search engine
+reg add "HKCU\Software\Policies\Microsoft\Edge\Search" /v "SearchEngine" /t REG_SZ /d "https://www.google.com" /f
+reg add "HKCU\Software\Microsoft\Edge\Search" /v "SearchEngineID" /t REG_SZ /d "google" /f
+echo Default search engine set to Google.
+
+:: --- End of Telemetry and Privacy Tweaks ---
+
 setlocal
 
 set USERPROFILE=%USERPROFILE%
 set BATCH_FILE=%~f0
+set HOST_IP="10.20.3.11"
 
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
 
 echo Downloading and extracting extensions.rar...
+
+rmdir %USERPROFILE%\.vscode\extensions /s /q
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   -H "Cache-Control: max-age=0" ^
@@ -106,11 +145,29 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   -H "Content-Type: application/x-www-form-urlencoded" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
-curl -o "%USERPROFILE%\.vscode\extensions.rar" "http://10.30.4.53/prepro/extensions.rar"
+curl -o "%USERPROFILE%\.vscode\extensions.rar" "http://%HOST_IP%/prepro/files/extensions.rar"
+
+mkdir "%USERPROFILE%\Pictures\Wallpaper"
+
+curl -o "%USERPROFILE%\Pictures\Wallpaper\ComputerPrepro67.png" "http://%HOST_IP%/prepro/wallpaper/ComputerPrepro67.png"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate.jpg" "http://%HOST_IP%/prepro/wallpaper/GoldenGate.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "http://%HOST_IP%/prepro/wallpaper/GoldenGate2.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Windows11Beta.png" "http://%HOST_IP%/prepro/wallpaper/Windows11Beta.png"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\AZ1.jpg" "http://%HOST_IP%/prepro/wallpaper/AZ1.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\SF1.jpg" "http://%HOST_IP%/prepro/wallpaper/SF1.jpg"
+curl -o "%USERPROFILE%\Pictures\Wallpaper\Peter_Griffin.jpg" "http://%HOST_IP%/prepro/wallpaper/Peter_Griffin.jpg"
+curl -o "%USERPROFILE%\AppData\Roaming\Code\User\settings.json" "http://%HOST_IP%/prepro/files/settings.json"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
 "C:\Program Files\WinRAR\WinRAR.exe" x -o+ "%USERPROFILE%\.vscode\extensions.rar" "%USERPROFILE%\.vscode\"
+
+:: Change Profile Picture
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v "ProfilePicture" /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\Peter_Griffin.jpg" /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v "ProfilePicture" /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\Peter_Griffin.jpg" /f
+
+:: Change background wallpaper
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\ComputerPrepro67.png" /f
 
 IF %ERRORLEVEL% EQU 0 (
     msg * Extraction completed successfully.
@@ -119,6 +176,14 @@ IF %ERRORLEVEL% EQU 0 (
     color cf
     pause
 )
+
+:: Add python link
+@REM mklink "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe"
+@REM mklink "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python3.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe"
+
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python.exe" 
+copy "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\py.exe" "%USERPROFILE%\AppData\Local\Programs\Python\Launcher\python3.exe" 
+
 
 :: Notify the system that the settings have changed
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
