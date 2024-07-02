@@ -53,8 +53,8 @@ reg add "HKCU\Control Panel\Desktop" /v SmoothScroll /t REG_SZ /d 1 /f
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v EnableTransparency /t REG_DWORD /d 1 /f
 
 :: Set system to dark mode
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 1 /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v SystemUsesLightTheme /t REG_DWORD /d 1 /f
 
 :: Modify individual visual effects settings (optional, for full best appearance effect)
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ListviewAlphaSelect /t REG_DWORD /d 1 /f
@@ -124,7 +124,6 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
 mkdir "%USERPROFILE%\Pictures\Wallpaper"
-
 curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "http://%HOST_IP%/wallpaper/GoldenGate2.jpg"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
