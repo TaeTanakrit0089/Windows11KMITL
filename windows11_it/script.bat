@@ -110,13 +110,28 @@ reg add "HKCU\SOFTWARE\Microsoft\Input\TIP" /v Policies /t REG_DWORD /d 255 /f
 :: Disable Windows Defender Sample Submission (for Windows 10)
 reg add "HKLM\SOFTWARE\Microsoft\Windows Defender" /v SubmitSamplesConsent /t REG_DWORD /d 2 /f
 
+:: Change Region to US
+reg add "HKCU\Control Panel\International" /v LocaleName /t REG_SZ /d en-US /f
+reg add "HKCU\Control Panel\International" /v sLanguage /t REG_SZ /d en-US /f
+reg add "HKCU\Control Panel\International" /v iCountry /t REG_SZ /d 1 /f
+
 :: --- End of Telemetry and Privacy Tweaks ---
+
+:: Reset VSCode
+taskkill /im Code.exe /f
+rmdir /s /q "%USERPROFILE%\.vscode\extensions"
+
+echo Resetting VS Code settings...
+rd /s /q "%appdata%\Code\User\settings.json"
+rd /s /q "%appdata%\Code\User\keybindings.json"
+rd /s /q "%appdata%\Code\User\snippets"
+echo.
 
 setlocal
 
 set USERPROFILE=%USERPROFILE%
 set BATCH_FILE=%~f0
-set HOST_IP="10.20.3.30"
+set HOST_IP="10.20.3.93"
 
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
@@ -128,15 +143,27 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
 mkdir "%USERPROFILE%\Pictures\Wallpaper"
-curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/GoldenGate2.jpg"
-curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Light.jpg"
-curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Dark.jpg"
+@REM curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/GoldenGate2.jpg"
+@REM curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Light.jpg"
+@REM curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Dark.jpg"
 
 curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "http://%HOST_IP%/wallpaper/GoldenGate2.jpg"
 curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "http://%HOST_IP%/wallpaper/Sequoia-Light.jpg"
 curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "http://%HOST_IP%/wallpaper/Sequoia-Dark.jpg"
 
+curl -o "%USERPROFILE%\.vscode\extensions.zip" "http://%HOST_IP%/files/extensions.zip"
+
+curl -o "C:\cygwin64.zip" "http://%HOST_IP%/files/cygwin64.zip"
+
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
+
+:: Extract VSCode
+"C:\Program Files\WinRAR\WinRAR.exe" x -ibck -y "%USERPROFILE%\.vscode\extensions.zip" "%USERPROFILE%\.vscode\"
+del /q "%USERPROFILE%\.vscode\extensions.zip"
+
+:: Extract Cygwin
+"C:\Program Files\WinRAR\WinRAR.exe" x -ibck -y "C:\cygwin64.zip" "C:\"
+del /q "%USERPROFILE%\.vscode\extensions.zip"
 
 
 :: Change background wallpaper
