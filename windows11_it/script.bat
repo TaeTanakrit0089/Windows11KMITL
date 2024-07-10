@@ -136,9 +136,6 @@ set HOST_IP="10.20.3.93"
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
 
-:: Clear Desktop
-del /q "%USERPROFILE%\Desktop\*"
-
 curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   -H "Cache-Control: max-age=0" ^
   -H "Connection: keep-alive" ^
@@ -161,8 +158,6 @@ curl -o "%AppData%\Code\User\settings.json" "http://%HOST_IP%/files/settings.jso
 curl -o "%USERPROFILE%\Documents\cygwin64.zip" "http://%HOST_IP%/files/cygwin64.zip"
 curl -o "%USERPROFILE%\Desktop\Cygwin.lnk" "http://%HOST_IP%/files/Cygwin.lnk"
 
-curl -o "%USERPROFILE%\Desktop\Desktop.zip" "http://%HOST_IP%/files/Desktop.zip"
-
 curl -o "%USERPROFILE%\Desktop\PhysicalCom\hello.c" "http://%HOST_IP%/hello.c"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
@@ -175,11 +170,7 @@ del /q "%USERPROFILE%\.vscode\extensions.zip"
 "C:\Program Files\WinRAR\WinRAR.exe" x -y "%USERPROFILE%\Documents\cygwin64.zip" "%USERPROFILE%\Documents\"
 del /q "%USERPROFILE%\Documents\cygwin64.zip"
 
-:: Extract Desktop
-"C:\Program Files\WinRAR\WinRAR.exe" x -y "%USERPROFILE%\Desktop\Desktop.zip" "%USERPROFILE%\Desktop\"
-del /q "%USERPROFILE%\Desktop\Desktop.zip"
-
-:: Delete Python
+:: Delete All Files in Desktop
 del /q "%USERPROFILE%\Desktop\*.py"
 del /q "%USERPROFILE%\Desktop\*.*rap*"
 del /q "%USERPROFILE%\Desktop\*.rap"
