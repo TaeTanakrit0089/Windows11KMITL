@@ -136,6 +136,9 @@ set HOST_IP="10.20.3.93"
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
 
+:: Clear Desktop
+del /q "%USERPROFILE%\Desktop\*"
+
 curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   -H "Cache-Control: max-age=0" ^
   -H "Connection: keep-alive" ^
@@ -143,6 +146,7 @@ curl "https://portal.it.kmitl.ac.th:4081/internal/dologin.php" ^
   --data-raw "kerio_username=Maxhub+Peer+Tutor3&kerio_password="
 
 mkdir "%USERPROFILE%\Pictures\Wallpaper"
+mkdir "%USERPROFILE%\Desktop\PhysicalCom"
 @REM curl -o "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/GoldenGate2.jpg"
 @REM curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Light.jpg"
 @REM curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "https://raw.githubusercontent.com/TaeTanakrit0089/Windows11KMITL/main/windows11_it/wallpaper/Sequoia-Dark.jpg"
@@ -152,22 +156,37 @@ curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" "http://%HOST_IP%/w
 curl -o "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Dark.jpg" "http://%HOST_IP%/wallpaper/Sequoia-Dark.jpg"
 
 curl -o "%USERPROFILE%\.vscode\extensions.zip" "http://%HOST_IP%/files/extensions.zip"
+curl -o "%AppData%\Code\User\settings.json" "http://%HOST_IP%/files/settings.json"
 
-curl -o "C:\cygwin64.zip" "http://%HOST_IP%/files/cygwin64.zip"
+curl -o "%USERPROFILE%\Documents\cygwin64.zip" "http://%HOST_IP%/files/cygwin64.zip"
+curl -o "%USERPROFILE%\Desktop\Cygwin.lnk" "http://%HOST_IP%/files/Cygwin.lnk"
+
+curl -o "%USERPROFILE%\Desktop\Desktop.zip" "http://%HOST_IP%/files/Desktop.zip"
+
+curl -o "%USERPROFILE%\Desktop\PhysicalCom\hello.c" "http://%HOST_IP%/hello.c"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
 :: Extract VSCode
-"C:\Program Files\WinRAR\WinRAR.exe" x -ibck -y "%USERPROFILE%\.vscode\extensions.zip" "%USERPROFILE%\.vscode\"
+"C:\Program Files\WinRAR\WinRAR.exe" x -y "%USERPROFILE%\.vscode\extensions.zip" "%USERPROFILE%\.vscode\"
 del /q "%USERPROFILE%\.vscode\extensions.zip"
 
 :: Extract Cygwin
-"C:\Program Files\WinRAR\WinRAR.exe" x -ibck -y "C:\cygwin64.zip" "C:\"
-del /q "%USERPROFILE%\.vscode\extensions.zip"
+"C:\Program Files\WinRAR\WinRAR.exe" x -y "%USERPROFILE%\Documents\cygwin64.zip" "%USERPROFILE%\Documents\"
+del /q "%USERPROFILE%\Documents\cygwin64.zip"
 
+:: Extract Desktop
+"C:\Program Files\WinRAR\WinRAR.exe" x -y "%USERPROFILE%\Desktop\Desktop.zip" "%USERPROFILE%\Desktop\"
+del /q "%USERPROFILE%\Desktop\Desktop.zip"
+
+:: Delete Python
+del /q "%USERPROFILE%\Desktop\*.py"
+del /q "%USERPROFILE%\Desktop\*.*rap*"
+del /q "%USERPROFILE%\Desktop\*.rap"
+del /q "%USERPROFILE%\Desktop\*.c"
 
 :: Change background wallpaper
-reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\Sequoia-Light.jpg" /f
+reg add "HKCU\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\GoldenGate2.jpg" /f
 
 :: Notify the system that the settings have changed
 RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters
