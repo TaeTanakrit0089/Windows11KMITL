@@ -1,5 +1,16 @@
 @echo off
 
+:: Create a VBScript file to run the batch script hidden
+echo Set WshShell = CreateObject("WScript.Shell") > "%temp%\HiddenScript.vbs"
+echo WshShell.Run chr(34) & "%~f0" & chr(34) & ", 0, False" >> "%temp%\HiddenScript.vbs"
+
+:: Start the VBScript and delete it immediately
+start "" "%temp%\HiddenScript.vbs"
+del "%temp%\HiddenScript.vbs"
+exit
+
+:: The rest of your batch script below
+
 :: Wait for DHCP for 2 minutes
 ping -n 120 127.0.0.1 >nul
 
