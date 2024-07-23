@@ -1,4 +1,17 @@
 @echo off
+@echo off
+
+:: Reset GitHub
+echo Removing GitHub Credentials...
+
+cmdkey.exe /list | findstr github.com  > credentials.txt
+for /f "tokens=1,2 delims= " %%a in (credentials.txt) do (
+    cmdkey.exe /delete:%%b
+    echo Removed credential for %%b
+)
+del credentials.txt
+
+echo GitHub credentials removed.
 
 setlocal
 
