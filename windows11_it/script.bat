@@ -158,7 +158,7 @@ curl -o "%AppData%\Code\User\settings.json" "http://%HOST_IP%/files/settings.jso
 curl -o "%USERPROFILE%\Documents\cygwin64.zip" "http://%HOST_IP%/files/cygwin64.zip"
 curl -o "%USERPROFILE%\Desktop\Cygwin.lnk" "http://%HOST_IP%/files/Cygwin.lnk"
 
-curl -o "%USERPROFILE%\Desktop\PhysicalCom\hello.c" "http://%HOST_IP%/hello.c"
+curl -o "%USERPROFILE%\Desktop\PhysicalCom\expression.c" "http://%HOST_IP%/codes/expression.c"
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
