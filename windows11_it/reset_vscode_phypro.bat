@@ -1,23 +1,40 @@
 @echo off
-@echo off
-
-:: Reset GitHub
-echo Removing GitHub Credentials...
-
-cmdkey.exe /list | findstr github.com  > credentials.txt
-for /f "tokens=1,2 delims= " %%a in (credentials.txt) do (
-    cmdkey.exe /delete:%%b
-    echo Removed credential for %%b
-)
-del credentials.txt
-
-echo GitHub credentials removed.
 
 setlocal
 
 set USERPROFILE=%USERPROFILE%
 set BATCH_FILE=%~f0
 set HOST_IP="10.20.3.93"
+
+:: Reset GitHub
+echo Removing GitHub credentials...
+
+for /f "tokens=*" %%a in ('git config --list ^| findstr /i "github.com"') do (
+  git config --global --unset-all %%a
+)
+
+echo.
+echo Removing global Git credentials...
+
+git config --global --unset credential.helper
+git config --global --unset user.email
+git config --global --unset user.name
+
+echo.
+echo Removing cached credentials from Credential Manager...
+
+cmdkey /list | findstr /i "git" > nul 2>&1
+if %errorlevel% == 0 (
+  echo Found Git credentials in Credential Manager. Removing...
+  cmdkey /delete:git:https://github.com
+  cmdkey /delete:git:https://oauth2
+  echo Done.
+) else (
+  echo No Git credentials found in Credential Manager.
+)
+
+echo.
+echo Git credentials have been removed.
 
 :: Enable showing file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d "0" /f
