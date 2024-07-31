@@ -80,7 +80,7 @@ curl -o "%USERPROFILE%\Pictures\Wallpaper\SanFrancisco02.jpg" "http://%HOST_IP%/
 
 curl "https://portal.it.kmitl.ac.th:4081/internal/logout"
 
-"C:\Program Files\WinRAR\WinRAR.exe" x -o+ "%USERPROFILE%\.vscode\extensions.rar" "%USERPROFILE%\.vscode\"
+"C:\Program Files\WinRAR\WinRAR.exe" x -o+ "%USERPROFILE%\.vscode\extensions.zip" "%USERPROFILE%\.vscode\"
 
 :: Change background wallpaper
 reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%USERPROFILE%\Pictures\Wallpaper\GoldenGate02.jpg" /f
